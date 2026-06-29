@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Campaign {
+  id                String   @id @default(cuid())
+  title             String
+  description       String
+  longDescription   String?
+  goalAmount        Float
+  raisedAmount      Float    @default(0)
+  currency          String   @default("ETB")
+  status            String   @default("active")
+  imageUrl          String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  donations         Donation[]
+  transactions      PaymentTransaction[]
+}
+
+model Donation {
+  id                String   @id @default(cuid())
+  campaignId        String
+  campaign          Campaign @relation(fields: [campaignId], references: [id])
+  donorName         String?
+  donorEmail        String?
+  donorPhone        String?
+  amount            Float
+  currency          String   @default("ETB")
+  isAnonymous       Boolean  @default(false)
+  message           String?
+  status            String   @default("pending")
+  afroPayReference  String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  transaction       PaymentTransaction?
+}
+
+model PaymentTransaction {
+  id                String   @id @default(cuid())
+  donationId        String   @unique
+  donation          Donation @relation(fields: [donationId], references: [id])
+  campaignId        String
+  campaign          Campaign @relation(fields: [campaignId], references: [id])
+  provider          String   @default("afropay")
+  afroPayReference  String?
+  internalReference String?
+  amount            Float
+  currency          String   @default("ETB")
+  status            String   @default("pending")
+  gatewayResponse   String?
+  verifiedAt        DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
