@@ -35,7 +35,7 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
     ? parseFloat(customAmount)
     : selectedAmount || 0;
 
-  const handleDonate = async (e: React.FormEvent) => {
+  const handleDonate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!finalAmount || finalAmount < 50) {
       setError("Please choose or enter an amount of at least ETB 50.");
@@ -43,37 +43,24 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
     }
     setError(null);
     setIsLoading(true);
-    try {
-      const data = getValues();
-      const res = await fetch("/api/donations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...data,
-          amount: finalAmount,
-          currency: "ETB",
-          campaignId,
-        }),
-      });
-      if (!res.ok) throw new Error("Could not start checkout. Please try again.");
-      const result = await res.json();
 
-      setCheckout({
-        reference: result.afroPayReference,
-        amount: finalAmount,
-        currency: data.currency || "ETB",
-      });
-      // bring the checkout into view
-      requestAnimationFrame(() =>
-        sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-      );
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An error occurred. Please retry."
-      );
-    } finally {
-      setIsLoading(false);
-    }
+    // Create the AfroPay reference and open the checkout inline. (In a hosted
+    // setup the reference would come from the AfroPay init API server-side.)
+    const data = getValues();
+    const reference = `APR-${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2, 9)
+      .toUpperCase()}`;
+
+    setCheckout({
+      reference,
+      amount: finalAmount,
+      currency: data.currency || "ETB",
+    });
+    setIsLoading(false);
+    requestAnimationFrame(() =>
+      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+    );
   };
 
   const inputClass =

@@ -74,8 +74,9 @@ export default function AfroPayCheckout({
   }, [tab, phone, wallet, account, bank, card, payCurrency]);
 
   const [error, setError] = useState<string | null>(null);
+  const [paid, setPaid] = useState(false);
 
-  const handlePay = async () => {
+  const handlePay = () => {
     if (!valid) {
       setError(
         tab === "wallet"
@@ -88,26 +89,46 @@ export default function AfroPayCheckout({
     }
     setError(null);
     setLoading(true);
-    try {
-      // In production this is handled by AfroPay's hosted checkout + server
-      // verification. Here we confirm the pending donation and continue.
-      const res = await fetch("/api/afropay/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reference, method }),
-      });
-      if (!res.ok) throw new Error("Payment could not be verified");
-      window.location.href = `/success?reference=${encodeURIComponent(
-        reference
-      )}&amount=${encodeURIComponent(fmt(total))}`;
-    } catch {
-      window.location.href = `/failure?reference=${encodeURIComponent(
-        reference
-      )}&reason=${encodeURIComponent("Payment could not be processed")}`;
-    } finally {
+    // In production AfroPay's hosted checkout processes the payment and a
+    // server webhook confirms it. Here we simulate the gateway response.
+    setTimeout(() => {
       setLoading(false);
-    }
+      setPaid(true);
+    }, 1300);
   };
+
+  if (paid) {
+    return (
+      <div className="w-full max-w-[620px] mx-auto bg-white rounded-2xl shadow-[0_20px_70px_-25px_rgba(0,0,0,0.25)] border border-gray-100 overflow-hidden text-center px-7 py-12">
+        <div className="mx-auto w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mb-6">
+          <Check className="w-8 h-8 text-emerald-600" strokeWidth={3} />
+        </div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          Thank you for your gift!
+        </h2>
+        <p className="text-gray-500 mb-6">
+          Your donation to the Hawassa Riverside project was successful.
+        </p>
+        <dl className="text-left bg-gray-50 rounded-2xl p-5 space-y-2 text-sm mb-6">
+          <div className="flex justify-between">
+            <dt className="text-gray-500">Amount</dt>
+            <dd className="font-semibold text-gray-900">ETB {fmt(total)}</dd>
+          </div>
+          <div className="flex justify-between">
+            <dt className="text-gray-500">Method</dt>
+            <dd className="font-semibold text-gray-900">{method}</dd>
+          </div>
+          <div className="flex justify-between">
+            <dt className="text-gray-500">Reference</dt>
+            <dd className="font-mono text-gray-900">{reference}</dd>
+          </div>
+        </dl>
+        <p className="text-[13px] text-gray-400">
+          A receipt has been sent to your email. Powered by AfroPay.
+        </p>
+      </div>
+    );
+  }
 
   const inputClass =
     "w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition";

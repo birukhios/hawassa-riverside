@@ -1,3 +1,5 @@
+import { asset } from "@/lib/asset";
+
 const GALLERY = [
   {
     src: "/hawassa-3.jpg",
@@ -57,7 +59,7 @@ export default function WhatWeBuild() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={g.src}
+                src={asset(g.src)}
                 alt={g.title}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
@@ -75,7 +77,7 @@ export default function WhatWeBuild() {
           <div className="grid md:grid-cols-[1.4fr_1fr] items-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/hawassa-7.jpg"
+              src={asset("/hawassa-7.jpg")}
               alt="Hawassa Riverside master plan"
               className="w-full h-full object-cover"
             />

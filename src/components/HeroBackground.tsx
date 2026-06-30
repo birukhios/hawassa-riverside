@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { asset } from "@/lib/asset";
 
 // Slideshow images live in /public. Order = display order.
 const SLIDES = [
@@ -32,7 +33,7 @@ export default function HeroBackground() {
       {SLIDES.map((src, i) => (
         <img
           key={src}
-          src={src}
+          src={asset(src)}
           alt=""
           style={{
             position: "absolute",

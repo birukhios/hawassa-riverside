@@ -33,20 +33,9 @@ export default function CampaignProgress({
 }: ProgressProps) {
   const { ref, inView } = useInView<HTMLDivElement>();
   const [displayRaised, setDisplayRaised] = useState(0);
-  const [liveRaised, setLiveRaised] = useState(raised);
-  const [liveDonors, setLiveDonors] = useState(donors);
+  const [liveRaised] = useState(raised);
+  const [liveDonors] = useState(donors);
   const percentage = Math.min((liveRaised / goal) * 100, 100);
-
-  // Pull live totals so completed donations are reflected immediately.
-  useEffect(() => {
-    fetch("/api/stats")
-      .then((r) => r.json())
-      .then((s) => {
-        if (typeof s.raised === "number") setLiveRaised(s.raised);
-        if (typeof s.donors === "number") setLiveDonors(s.donors);
-      })
-      .catch(() => {});
-  }, []);
 
   useEffect(() => {
     if (!inView) return;

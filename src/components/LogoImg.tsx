@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { asset } from "@/lib/asset";
 
 // Renders a logo image once it loads; until then (or if the file is missing)
 // shows the fallback — so a not-yet-added /logos file never breaks the UI.
@@ -21,7 +22,7 @@ export default function LogoImg({
     <>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={src}
+        src={asset(src)}
         alt={alt}
         onLoad={() => setLoaded(true)}
         onError={() => setLoaded(false)}

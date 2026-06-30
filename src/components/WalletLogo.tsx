@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Brand } from "@/lib/payment-options";
+import { asset } from "@/lib/asset";
 
 // Renders the real brand logo image directly (so it shows immediately, even
 // server-rendered). If the file is missing it falls back to a styled wordmark.
@@ -18,7 +19,7 @@ export default function WalletLogo({
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={brand.logo}
+        src={asset(brand.logo)}
         alt={brand.name}
         onError={() => setFailed(true)}
         className="max-h-9 max-w-[85%] object-contain"
