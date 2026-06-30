@@ -7,16 +7,16 @@ export default function HeroSection() {
       id="top"
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#0b1f33]"
     >
-      {/* Full-screen cross-fading slideshow background */}
+      {/* Full-screen gradient background */}
       <HeroBackground />
 
-      {/* Legibility overlay */}
+      {/* Subtle legibility overlay (gradient is already dark enough) */}
       <div
         style={{
           position: "absolute",
           inset: 0,
           background:
-            "linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.35), rgba(0,0,0,0.65))",
+            "linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0) 40%, rgba(0,0,0,0.25))",
           pointerEvents: "none",
         }}
       />
