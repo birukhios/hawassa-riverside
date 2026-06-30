@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { TrendingUp } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface ProgressProps {
   raised: number;
@@ -9,104 +8,142 @@ interface ProgressProps {
   donors: number;
 }
 
-export default function CampaignProgress({ raised, goal, donors }: ProgressProps) {
-  const [displayRaised, setDisplayRaised] = useState(0);
-  const percentage = (raised / goal) * 100;
+function useInView<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  const [inView, setInView] = useState(false);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    const target = raised;
-    let current = 0;
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => entry.isIntersecting && setInView(true),
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
-    if (current < target) {
-      interval = setInterval(() => {
-        current += target / 60;
-        setDisplayRaised(Math.min(current, target));
-      }, 30);
-    }
+  return { ref, inView };
+}
 
-    return () => clearInterval(interval);
-  }, [raised]);
+export default function CampaignProgress({
+  raised,
+  goal,
+  donors,
+}: ProgressProps) {
+  const { ref, inView } = useInView<HTMLDivElement>();
+  const [displayRaised, setDisplayRaised] = useState(0);
+  const [liveRaised, setLiveRaised] = useState(raised);
+  const [liveDonors, setLiveDonors] = useState(donors);
+  const percentage = Math.min((liveRaised / goal) * 100, 100);
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-US", {
+  // Pull live totals so completed donations are reflected immediately.
+  useEffect(() => {
+    fetch("/api/stats")
+      .then((r) => r.json())
+      .then((s) => {
+        if (typeof s.raised === "number") setLiveRaised(s.raised);
+        if (typeof s.donors === "number") setLiveDonors(s.donors);
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (!inView) return;
+    let frame: number;
+    const start = performance.now();
+    const duration = 1600;
+
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setDisplayRaised(liveRaised * eased);
+      if (t < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [inView, liveRaised]);
+
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "ETB",
       maximumFractionDigits: 0,
     }).format(value);
-  };
 
   return (
-    <section className="py-16 lg:py-24 bg-white" id="progress">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            Campaign Progress
+    <section id="progress" className="py-28 lg:py-36 bg-mist">
+      <div ref={ref} className="max-w-5xl mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl sm:text-6xl font-semibold text-ink text-balance">
+            Every gift moves us forward.
           </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Every donation brings us closer to our goal of transforming Hawassa City
+          <p className="mt-5 text-xl text-ink-2 max-w-xl mx-auto text-balance">
+            Watch the campaign grow in real time as the community comes
+            together.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-          {/* Main progress card */}
-          <div className="lg:col-span-2 bg-gradient-to-br from-blue-50 to-blue-50 rounded-2xl p-8 border border-blue-100">
-            <div className="mb-6">
-              <div className="flex justify-between items-center mb-3">
-                <p className="text-gray-600 font-semibold">Total Raised</p>
-                <p className="text-sm text-gray-500">{Math.round(percentage)}% of goal</p>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all duration-1000 ease-out rounded-full"
-                  style={{ width: `${Math.min(percentage, 100)}%` }}
-                ></div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <p className="text-gray-600 text-sm mb-1">Raised</p>
-                <p className="text-3xl font-bold text-blue-600">
-                  {formatCurrency(displayRaised)}
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-600 text-sm mb-1">Goal</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {formatCurrency(goal)}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Stats card */}
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 border border-green-100">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-green-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">Community Support</h3>
-            </div>
-
+        <div className="bg-white rounded-[28px] border border-black/5 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.25)] p-8 sm:p-12">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-8">
             <div>
-              <p className="text-gray-600 text-sm mb-1">Generous Donors</p>
-              <p className="text-4xl font-bold text-green-600">{donors.toLocaleString()}</p>
-              <p className="text-gray-500 text-sm mt-3">
-                Supporting hope, unity, and positive change
+              <p className="text-sm text-ink-2 font-medium uppercase tracking-wider mb-2">
+                Raised so far
+              </p>
+              <p className="text-5xl sm:text-6xl font-semibold text-ink tracking-tight tabular-nums">
+                {formatCurrency(displayRaised)}
+              </p>
+            </div>
+            <div className="text-left sm:text-right">
+              <p className="text-sm text-ink-2 font-medium uppercase tracking-wider mb-2">
+                Goal
+              </p>
+              <p className="text-2xl font-semibold text-ink-2 tracking-tight">
+                {formatCurrency(goal)}
               </p>
             </div>
           </div>
-        </div>
 
-        {/* Impact preview */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 text-white text-center">
-          <h3 className="text-2xl font-bold mb-3">Each Contribution Matters</h3>
-          <p className="text-blue-100 max-w-2xl mx-auto">
-            Whether it's ETB 100 or ETB 5,000, your donation directly supports community initiatives, public improvements, and the future of Hawassa City.
+          <div className="h-3 w-full rounded-full bg-black/8 overflow-hidden mb-3">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-lake to-emerald-500 transition-[width] duration-[1600ms] ease-out"
+              style={{ width: inView ? `${percentage}%` : "0%" }}
+            />
+          </div>
+          <p className="text-sm text-ink-2">
+            {Math.round(percentage)}% of our goal reached
           </p>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-px mt-10 rounded-2xl overflow-hidden bg-black/5">
+            <Stat value={liveDonors.toLocaleString()} label="Donors" />
+            <Stat value="18" label="Days remaining" />
+            <Stat
+              value="ETB 5,000"
+              label="Latest gift"
+              className="col-span-2 sm:col-span-1"
+            />
+          </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function Stat({
+  value,
+  label,
+  className = "",
+}: {
+  value: string;
+  label: string;
+  className?: string;
+}) {
+  return (
+    <div className={`bg-white px-6 py-7 text-center ${className}`}>
+      <p className="text-2xl sm:text-3xl font-semibold text-ink tracking-tight">
+        {value}
+      </p>
+      <p className="text-sm text-ink-2 mt-1">{label}</p>
+    </div>
   );
 }

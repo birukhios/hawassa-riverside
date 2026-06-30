@@ -1,88 +1,79 @@
-import {
-  Users,
-  Building2,
-  BookOpen,
-  AlertCircle,
-  Sparkles,
-  Leaf,
-} from "lucide-react";
+import { Waves, Baby, Tent, Bike, Music } from "lucide-react";
 
 const IMPACTS = [
   {
-    title: "Community Support",
+    title: "Lakefront Promenade",
     description:
-      "Supporting local communities and grassroots initiatives that create real impact",
-    icon: Users,
-    color: "from-blue-500 to-blue-600",
+      "A wide paved walkway along the water with seating, lighting and viewpoints over Lake Hawassa.",
+    icon: Waves,
+    tint: "text-sky-500",
   },
   {
-    title: "Public Space Improvement",
+    title: "Water Slides & Pool",
     description:
-      "Improving public spaces and infrastructure that benefit everyone",
-    icon: Building2,
-    color: "from-cyan-500 to-blue-600",
+      "A family water park with slides and a swimming pool — a first of its kind for the city.",
+    icon: Waves,
+    tint: "text-cyan-500",
   },
   {
-    title: "Youth & Education",
+    title: "Children's Playground",
     description:
-      "Empowering young people through education and skill development programs",
-    icon: BookOpen,
-    color: "from-green-500 to-emerald-600",
+      "Safe, modern play areas where Hawassa's children can run, climb and play freely.",
+    icon: Baby,
+    tint: "text-emerald-500",
   },
   {
-    title: "Emergency Assistance",
+    title: "Central Stage & Dome",
     description:
-      "Rapid response to community needs during crises and emergencies",
-    icon: AlertCircle,
-    color: "from-orange-500 to-red-600",
+      "A landmark events dome and open stage for concerts, festivals and city gatherings.",
+    icon: Music,
+    tint: "text-orange-500",
   },
   {
-    title: "City Beautification",
+    title: "Cultural Village",
     description:
-      "Making Hawassa a more beautiful and welcoming place for all residents",
-    icon: Sparkles,
-    color: "from-pink-500 to-rose-600",
+      "Traditional gathering huts celebrating Sidama and Ethiopian heritage and community life.",
+    icon: Tent,
+    tint: "text-rose-500",
   },
   {
-    title: "Local Development",
+    title: "Green Walkways & Sport",
     description:
-      "Supporting sustainable development projects for long-term prosperity",
-    icon: Leaf,
-    color: "from-emerald-500 to-green-600",
+      "Bicycle tracks, tree-lined paths and green spaces for walking, cycling and family time.",
+    icon: Bike,
+    tint: "text-green-600",
   },
 ];
 
 export default function ImpactSection() {
   return (
-    <section className="py-16 lg:py-24 bg-gray-50" id="impact">
+    <section id="impact" className="py-28 lg:py-36 bg-white">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            Why This Fund Matters
+        <div className="text-center mb-16">
+          <h2 className="text-4xl sm:text-6xl font-semibold text-ink text-balance">
+            What your gift builds.
           </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Your donation supports meaningful changes across Hawassa City
+          <p className="mt-5 text-xl text-ink-2 max-w-2xl mx-auto text-balance">
+            Every donation goes toward the spaces that make up the Hawassa
+            Riverside park.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {IMPACTS.map((impact) => {
-            const IconComponent = impact.icon;
+            const Icon = impact.icon;
             return (
               <div
                 key={impact.title}
-                className="bg-white rounded-xl p-8 hover:shadow-lg transition-shadow duration-300 border border-gray-100"
+                className="group bg-mist rounded-3xl p-8 transition-all duration-500 hover:bg-white hover:shadow-[0_24px_60px_-30px_rgba(0,0,0,0.25)] hover:-translate-y-1 border border-transparent hover:border-black/5"
               >
-                <div
-                  className={`w-14 h-14 rounded-full bg-gradient-to-br ${impact.color} flex items-center justify-center mb-6`}
-                >
-                  <IconComponent className="w-7 h-7 text-white" />
+                <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-6 transition-transform duration-500 group-hover:scale-110">
+                  <Icon className={`w-6 h-6 ${impact.tint}`} strokeWidth={2} />
                 </div>
-
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                <h3 className="text-xl font-semibold text-ink mb-2">
                   {impact.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-ink-2 leading-relaxed">
                   {impact.description}
                 </p>
               </div>

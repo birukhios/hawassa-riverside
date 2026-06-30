@@ -1,6 +1,6 @@
-export const CAMPAIGN_TITLE = "Hawassa Community Fund";
+export const CAMPAIGN_TITLE = "Hawassa Riverside";
 export const CAMPAIGN_DESCRIPTION =
-  "Support community-driven initiatives that improve lives, strengthen public spaces, and bring hope to Hawassa City.";
+  "Help build the Hawassa Riverside — a lakefront park with promenades, play areas, water attractions and gathering spaces for every family in the city.";
 
 export const DONATION_AMOUNTS = [
   { value: 100, label: "ETB 100" },
@@ -57,58 +57,65 @@ export const IMPACT_ITEMS = [
 export const DONATION_IMPACT = [
   {
     amount: 100,
-    description: "Supports local community activities and small initiatives",
+    description: "Plants a tree along the lakefront walkway",
   },
   {
     amount: 500,
-    description:
-      "Funds city improvement materials and public space enhancements",
+    description: "Adds a bench or seating spot for families to rest by the water",
   },
   {
     amount: 1000,
-    description: "Supports larger community programs and youth development",
+    description: "Helps build play equipment for the children's playground",
   },
-  { amount: 5000, description: "Sponsors major city improvement projects" },
+  {
+    amount: 5000,
+    description: "Funds a section of the paved riverside promenade",
+  },
   {
     amount: 10000,
-    description: "Creates long-term sustainable development initiatives",
+    description: "Sponsors a shaded gathering space or cultural hut",
   },
 ];
 
 export const FAQS = [
   {
-    question: "What is the Hawassa Community Fund?",
+    question: "What is the Hawassa Riverside project?",
     answer:
-      "The Hawassa Community Fund is a public fundraising campaign to support community-driven initiatives, public improvements, and social impact projects across Hawassa City. Every donation directly contributes to making our city better.",
+      "Hawassa Riverside is a public fundraising campaign to build a modern lakefront park for the city — a promenade along the water, children's playgrounds, water attractions, a central stage and dome, cultural gathering huts, green walkways and family seating. Every donation goes directly toward building it.",
   },
   {
     question: "How do I donate?",
     answer:
-      "Simply select your donation amount, enter your details, and click 'Donate with AfroPay.' You'll be securely redirected to AfroPay Checkout to complete your payment.",
+      "Select your donation amount, enter your details, and click 'Donate with AfroPay.' You'll be taken to the secure AfroPay checkout where you can pay with a local wallet, bank account, or international card.",
   },
   {
-    question: "Is my payment secure?",
+    question: "Can people outside Ethiopia contribute?",
     answer:
-      "Yes. We use AfroPay Checkout, a trusted and secure payment processor. Your payment information is encrypted and protected.",
-  },
-  {
-    question: "Will I receive a receipt?",
-    answer:
-      "Yes. After successful payment, you'll receive a receipt via email and can view it anytime from your donation confirmation page.",
-  },
-  {
-    question: "Can I donate anonymously?",
-    answer:
-      "Yes. You can check the 'Donate Anonymously' option and your donation will appear as anonymous in the public donor list.",
+      "Absolutely. The AfroPay checkout accepts international Visa, Mastercard and Amex in your own currency — USD, EUR, GBP and more — so the diaspora and friends of Hawassa anywhere can give.",
   },
   {
     question: "Which payment methods are supported?",
     answer:
-      "We currently support AfroPay Checkout. AfroPay accepts multiple payment methods including mobile money, bank transfers, and card payments.",
+      "Locally: all major wallets (telebirr, CBE Birr, M-PESA, Chapa, Amole, HelloCash and more) and direct bank transfers from Ethiopian banks. Internationally: Visa, Mastercard and Amex in any currency — all through secure AfroPay Checkout.",
   },
   {
-    question: "Who manages this fund?",
+    question: "Is my payment secure?",
     answer:
-      "The Hawassa Community Fund is managed by Hawassa City development partners committed to transparency and accountability in every donation.",
+      "Yes. Payments are processed by AfroPay Checkout. Your financial details are encrypted and never stored on this site.",
+  },
+  {
+    question: "Will I receive a receipt?",
+    answer:
+      "Yes. After a successful payment you'll see a confirmation with your reference number and can download a receipt. A copy is also emailed to you.",
+  },
+  {
+    question: "Can I donate anonymously?",
+    answer:
+      "Yes. Tick 'Donate anonymously' and your name will be hidden from the public donor list — your contribution still counts toward the goal.",
+  },
+  {
+    question: "Who manages the funds?",
+    answer:
+      "The Hawassa Riverside fund is managed by the project's development partners with the city, committed to full transparency and public reporting on how every birr is spent.",
   },
 ];

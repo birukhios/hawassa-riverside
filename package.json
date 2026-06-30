@@ -10,16 +10,17 @@
     "prisma": "prisma"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
+    "@prisma/client": "^5.8.0",
+    "axios": "^1.6.5",
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.376.0",
     "next": "16.2.9",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-hook-form": "^7.51.3",
-    "zod": "^3.22.4",
-    "axios": "^1.6.5",
     "uuid": "^9.0.1",
-    "lucide-react": "^0.376.0",
-    "clsx": "^2.1.0",
-    "@prisma/client": "^5.8.0"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -29,8 +30,8 @@
     "@types/uuid": "^9.0.7",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "prisma": "^5.8.0",
     "tailwindcss": "^4",
-    "typescript": "^5",
-    "prisma": "^5.8.0"
+    "typescript": "^5"
   }
 }

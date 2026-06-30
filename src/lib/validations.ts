@@ -6,8 +6,8 @@ export const donationFormSchema = z.object({
   donorEmail: z.string().email().optional().or(z.literal("")),
   donorPhone: z.string().optional(),
   message: z.string().optional(),
-  isAnonymous: z.boolean().default(false),
-  currency: z.string().default("ETB"),
+  isAnonymous: z.boolean().default(false).optional(),
+  currency: z.string().default("ETB").optional(),
 });
 
 export type DonationFormData = z.infer<typeof donationFormSchema>;

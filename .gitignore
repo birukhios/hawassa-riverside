@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# large media served locally only (exceeds GitHub file limit)
+/public/hawassa-hero.mp4
+*.mov
