@@ -13,15 +13,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hawassa Riverside | Build the Lakefront Park",
+  title: "Hawassa Lakeside | Build the Lakefront Park",
   description:
-    "Help build the Hawassa Riverside — a lakefront park with promenades, playgrounds, water attractions and gathering spaces. Donate securely with AfroPay from anywhere, in any currency.",
+    "Help build the Hawassa Lakeside — a lakefront park with promenades, playgrounds, water attractions and gathering spaces. Donate securely with AfroPay from anywhere, in any currency.",
   keywords:
-    "Hawassa, Hawassa Riverside, lakefront, park, fundraising, donation, Lake Hawassa, AfroPay",
+    "Hawassa, Hawassa Lakeside, lakefront, park, fundraising, donation, Lake Hawassa, AfroPay",
   openGraph: {
-    title: "Hawassa Riverside",
+    title: "Hawassa Lakeside",
     description:
-      "Let's build the Hawassa Riverside — a lakefront park for every family.",
+      "Let's build the Hawassa Lakeside — a lakefront park for every family.",
     images: [
       {
         url: "https://images.unsplash.com/photo-1488521787991-ed7fe863a37f?w=1200&h=630&fit=crop",

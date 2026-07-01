@@ -25,7 +25,7 @@ export default function StorySection() {
           <p>
             For generations the shores of Lake Hawassa have been the heart of
             the city — where families walk at sunset, where children laugh,
-            where the community comes together. The Hawassa Riverside project
+            where the community comes together. The Hawassa Lakeside project
             transforms that shoreline into a world-class public park that
             belongs to everyone.
           </p>

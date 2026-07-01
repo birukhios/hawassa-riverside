@@ -22,80 +22,43 @@ export default function HeroSection() {
         }}
       />
 
-      <div className="relative max-w-4xl mx-auto px-6 text-center pt-28 pb-20">
-        {/* Co-brand lockup */}
-        <div className="animate-fade-up inline-flex items-center gap-4 bg-white rounded-2xl pl-5 pr-6 py-3.5 shadow-xl shadow-black/25 mb-8">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={asset("/logos/sidamabank-logo.jpg")}
-            alt="Sidama Bank"
-            className="h-10 sm:h-12 w-auto"
-          />
-          <span className="w-px h-8 bg-black/10" />
-          <span className="text-sm font-medium text-gray-500 inline-flex items-center gap-2">
-            Powered by
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={asset("/logos/afropay.png")}
-              alt="AfroPay"
-              className="h-7 sm:h-8 w-auto"
-            />
-          </span>
-        </div>
-
+      <div className="relative max-w-4xl mx-auto px-6 text-center pt-16 pb-20">
         <p className="animate-fade-up delay-100 text-[13px] font-medium uppercase tracking-[0.2em] text-sky-300/90 mb-5">
           A Sidama Bank Initiative
         </p>
 
-        <h1 className="animate-fade-up delay-100 text-5xl sm:text-7xl lg:text-[80px] font-semibold text-white leading-[1.04] text-balance drop-shadow-[0_2px_24px_rgba(0,0,0,0.4)]">
+        <h1 className="animate-fade-up delay-100 text-5xl sm:text-6xl lg:text-[68px] font-semibold text-white leading-[1.04] text-balance drop-shadow-[0_2px_24px_rgba(0,0,0,0.4)]">
           Let&apos;s build the
           <br />
-          Hawassa Riverside.
+          Hawassa Lakeside.
         </h1>
 
-        <p className="animate-fade-up delay-200 mt-6 text-xl sm:text-2xl text-white/85 max-w-2xl mx-auto leading-snug text-balance drop-shadow-[0_1px_14px_rgba(0,0,0,0.45)]">
+        <p className="animate-fade-up delay-200 mt-5 text-lg sm:text-xl text-white/85 max-w-2xl mx-auto leading-snug text-balance drop-shadow-[0_1px_14px_rgba(0,0,0,0.45)]">
           A lakefront park for every family — promenades, playgrounds, water
           attractions and gathering spaces along the shores of Lake Hawassa.
         </p>
 
-        {/* Framed video — fills the box (zoom crops the source letterbox) */}
-        <figure className="animate-fade-up delay-300 relative mt-12 mx-auto max-w-2xl rounded-[24px] overflow-hidden ring-1 ring-white/15 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.7)]">
-          <div className="relative aspect-video bg-black">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <video
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{ transform: "scale(2.9)" }}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              aria-label="Hawassa Riverside concept film"
-            >
-              <source src={asset("/riverside.mp4")} type="video/mp4" />
-            </video>
-
-            {/* top mask hides any residual source dots; bottom for caption */}
-            <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/70 to-transparent pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent pointer-events-none" />
-
-            <figcaption className="absolute bottom-4 left-5 right-5 flex items-center justify-between text-white">
-              <span className="inline-flex items-center gap-2 text-sm font-medium">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400" />
-                </span>
-                Hawassa Riverside · concept film
-              </span>
-              <span className="hidden sm:inline text-xs text-white/60 uppercase tracking-wider">
-                Lake Hawassa
-              </span>
-            </figcaption>
-          </div>
-        </figure>
+        {/* Video — clean frame. The source render is a small ~2.2:1 rectangle
+            centered inside big black borders (≈37/38% top/bottom, ≈34.5% sides).
+            The box matches that aspect and the video is oversized + centered so
+            only the render fills it — no black on any side, no frame/caption. */}
+        <div className="animate-fade-up delay-300 relative mt-8 mx-auto max-w-2xl rounded-[20px] overflow-hidden aspect-[11/5]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <video
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[440%] w-auto max-w-none"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            aria-hidden="true"
+          >
+            <source src={asset("/riverside.mp4")} type="video/mp4" />
+          </video>
+        </div>
 
         {/* CTAs */}
-        <div className="animate-fade-up delay-400 mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div className="animate-fade-up delay-400 mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
           <a
             href="#donate"
             className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-lake text-white text-[17px] font-medium hover:bg-lake-deep transition-all hover:scale-[1.02] shadow-lg"
@@ -111,6 +74,34 @@ export default function HeroSection() {
               ›
             </span>
           </a>
+        </div>
+
+        {/* Co-brand lockup — below the CTA */}
+        <div className="animate-fade-up delay-400 mt-8 flex items-center justify-center gap-3 drop-shadow-lg">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={asset("/logos/sidamabank-white.png")}
+            alt="Sidama Bank"
+            className="h-10 sm:h-12 w-auto"
+          />
+          <span className="w-px h-8 bg-white/25" />
+          <span className="flex flex-col leading-none gap-1 text-left">
+            <span className="text-[9px] font-medium uppercase tracking-wider text-white/60">
+              Powered by
+            </span>
+            {/* full AfroPay logo, ~half the Sidama height */}
+            <span className="inline-flex items-center gap-1">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={asset("/logos/afropay.png")}
+                alt="AfroPay"
+                className="h-4 sm:h-5 w-auto"
+              />
+              <span className="text-[15px] sm:text-[18px] font-extrabold lowercase tracking-tight leading-none text-white">
+                afropay
+              </span>
+            </span>
+          </span>
         </div>
       </div>
 

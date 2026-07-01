@@ -2,7 +2,7 @@ import { DONATION_IMPACT } from "@/lib/constants";
 
 export default function ImpactBreakdown() {
   return (
-    <section className="py-28 lg:py-36 bg-mist">
+    <section className="py-16 lg:py-24 bg-mist">
       <div className="max-w-3xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-6xl font-semibold text-ink text-balance">

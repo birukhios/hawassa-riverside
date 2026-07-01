@@ -1,6 +1,6 @@
-export const CAMPAIGN_TITLE = "Hawassa Riverside";
+export const CAMPAIGN_TITLE = "Hawassa Lakeside";
 export const CAMPAIGN_DESCRIPTION =
-  "Help build the Hawassa Riverside — a lakefront park with promenades, play areas, water attractions and gathering spaces for every family in the city.";
+  "Help build the Hawassa Lakeside — a lakefront park with promenades, play areas, water attractions and gathering spaces for every family in the city.";
 
 export const DONATION_AMOUNTS = [
   { value: 100, label: "ETB 100" },
@@ -79,9 +79,9 @@ export const DONATION_IMPACT = [
 
 export const FAQS = [
   {
-    question: "What is the Hawassa Riverside project?",
+    question: "What is the Hawassa Lakeside project?",
     answer:
-      "Hawassa Riverside is a public fundraising campaign to build a modern lakefront park for the city — a promenade along the water, children's playgrounds, water attractions, a central stage and dome, cultural gathering huts, green walkways and family seating. Every donation goes directly toward building it.",
+      "Hawassa Lakeside is a public fundraising campaign to build a modern lakefront park for the city — a promenade along the water, children's playgrounds, water attractions, a central stage and dome, cultural gathering huts, green walkways and family seating. Every donation goes directly toward building it.",
   },
   {
     question: "How do I donate?",
@@ -116,6 +116,6 @@ export const FAQS = [
   {
     question: "Who manages the funds?",
     answer:
-      "The Hawassa Riverside fund is managed by the project's development partners with the city, committed to full transparency and public reporting on how every birr is spent.",
+      "The Hawassa Lakeside fund is managed by the project's development partners with the city, committed to full transparency and public reporting on how every birr is spent.",
   },
 ];

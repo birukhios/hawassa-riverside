@@ -107,7 +107,7 @@ export default function AfroPayCheckout({
           Thank you for your gift!
         </h2>
         <p className="text-gray-500 mb-6">
-          Your donation to the Hawassa Riverside project was successful.
+          Your donation to the Hawassa Lakeside project was successful.
         </p>
         <dl className="text-left bg-gray-50 rounded-2xl p-5 space-y-2 text-sm mb-6">
           <div className="flex justify-between">

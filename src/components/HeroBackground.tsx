@@ -1,28 +1,57 @@
-// Hawassa-themed gradient hero background (lake blue -> teal -> green) with
-// soft radial glows for depth.
+"use client";
+
+import { useEffect, useState } from "react";
+import { asset } from "@/lib/asset";
+
+// Cross-fading panoramic lakeside renders behind the hero, with a black tint.
+const SLIDES = [
+  "/hawassa-2.jpg",
+  "/hawassa-3.jpg",
+  "/hawassa-5.jpg",
+  "/hawassa-6.jpg",
+  "/hawassa-4.jpg",
+];
+
+const INTERVAL_MS = 5000;
+
 export default function HeroBackground() {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(
+      () => setActive((i) => (i + 1) % SLIDES.length),
+      INTERVAL_MS
+    );
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <div
       aria-hidden="true"
       style={{ position: "absolute", inset: 0, overflow: "hidden" }}
     >
-      {/* base diagonal gradient */}
+      {SLIDES.map((src, i) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          key={src}
+          src={asset(src)}
+          alt=""
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center",
+            opacity: i === active ? 1 : 0,
+            transform: i === active ? "scale(1.05)" : "scale(1)",
+            transition: "opacity 1.6s ease-in-out, transform 6s ease-out",
+          }}
+        />
+      ))}
+      {/* black tint */}
       <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(135deg, #07223b 0%, #0b3d63 38%, #0e6b6b 72%, #12805a 100%)",
-        }}
-      />
-      {/* soft radial glows */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(60% 50% at 75% 18%, rgba(56,189,248,0.35) 0%, rgba(56,189,248,0) 60%), radial-gradient(55% 45% at 18% 85%, rgba(16,185,129,0.32) 0%, rgba(16,185,129,0) 60%)",
-        }}
+        style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.58)" }}
       />
     </div>
   );

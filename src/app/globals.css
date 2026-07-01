@@ -23,6 +23,11 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  /* single offset so anchored sections clear the fixed nav (no double offset) */
+  section {
+    scroll-margin-top: 3rem;
+  }
+
   body {
     background: var(--color-background);
     color: var(--color-foreground);

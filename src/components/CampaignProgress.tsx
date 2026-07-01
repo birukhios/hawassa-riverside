@@ -61,7 +61,7 @@ export default function CampaignProgress({
     }).format(value);
 
   return (
-    <section id="progress" className="py-28 lg:py-36 bg-mist">
+    <section id="progress" className="py-16 lg:py-24 bg-mist">
       <div ref={ref} className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-6xl font-semibold text-ink text-balance">

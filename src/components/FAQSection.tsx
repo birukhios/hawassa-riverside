@@ -8,7 +8,7 @@ export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="py-28 lg:py-36 bg-white">
+    <section id="faq" className="py-16 lg:py-24 bg-white">
       <div className="max-w-3xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-6xl font-semibold text-ink text-balance">

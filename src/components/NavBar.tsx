@@ -29,9 +29,15 @@ export default function NavBar() {
       <nav className="max-w-6xl mx-auto px-6 h-12 flex items-center justify-between">
         <a
           href="#top"
-          className="text-[15px] font-semibold tracking-tight text-ink"
+          className={`text-[15px] font-semibold tracking-tight transition-colors ${
+            scrolled ? "text-ink" : "text-white"
+          }`}
         >
-          Hawassa<span className="text-ink-2 font-normal"> Riverside</span>
+          Hawassa
+          <span className={scrolled ? "text-ink-2 font-normal" : "text-white/70 font-normal"}>
+            {" "}
+            Lakeside
+          </span>
         </a>
 
         <div className="hidden md:flex items-center gap-8">
@@ -39,7 +45,11 @@ export default function NavBar() {
             <a
               key={link.href}
               href={link.href}
-              className="text-[12px] text-ink-2 hover:text-ink transition-colors"
+              className={`text-[12px] transition-colors ${
+                scrolled
+                  ? "text-ink-2 hover:text-ink"
+                  : "text-white/80 hover:text-white"
+              }`}
             >
               {link.label}
             </a>

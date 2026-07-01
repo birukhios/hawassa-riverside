@@ -10,7 +10,7 @@ export default function Footer() {
         {/* CTA band */}
         <div className="text-center mb-20">
           <h3 className="text-3xl sm:text-5xl font-semibold text-ink text-balance mb-6">
-            Build the Hawassa Riverside.
+            Build the Hawassa Lakeside.
           </h3>
           <a
             href="#donate"
@@ -29,7 +29,7 @@ export default function Footer() {
                 className="h-9 w-auto"
               />
               <p className="text-[15px] font-semibold text-ink">
-                Hawassa Riverside
+                Hawassa Lakeside
               </p>
             </div>
             <p className="text-sm leading-relaxed max-w-xs">
@@ -115,7 +115,7 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-8 text-[13px]">
-          <p>&copy; {year} Hawassa Riverside Project. All rights reserved.</p>
+          <p>&copy; {year} Hawassa Lakeside Project. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-ink transition-colors">
               Privacy

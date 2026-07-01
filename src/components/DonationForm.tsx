@@ -64,13 +64,17 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
   };
 
   const inputClass =
-    "w-full px-4 py-3.5 rounded-2xl bg-mist border border-transparent focus:bg-white focus:border-lake/40 focus:outline-none focus:ring-4 focus:ring-lake/10 text-ink placeholder:text-ink-2/60 transition-all";
+    "w-full px-4 py-3 rounded-2xl bg-mist border border-transparent focus:bg-white focus:border-lake/40 focus:outline-none focus:ring-4 focus:ring-lake/10 text-ink placeholder:text-ink-2/60 transition-all";
 
   // --- Checkout view (inline, in the donate section) ---
   if (checkout) {
     return (
-      <section ref={sectionRef} id="donate" className="py-24 lg:py-32 bg-mist">
-        <div className="max-w-[620px] mx-auto px-4">
+      <section
+        ref={sectionRef}
+        id="donate"
+        className="min-h-screen flex flex-col justify-start pt-14 pb-12 bg-mist"
+      >
+        <div className="w-full max-w-[620px] mx-auto px-4">
           <button
             onClick={() => setCheckout(null)}
             className="inline-flex items-center gap-1.5 text-ink-2 hover:text-ink text-sm font-medium mb-5 transition-colors"
@@ -90,23 +94,27 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
 
   // --- Donation form view ---
   return (
-    <section ref={sectionRef} id="donate" className="py-28 lg:py-36 bg-white">
-      <div className="max-w-xl mx-auto px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl sm:text-6xl font-semibold text-ink text-balance">
+    <section
+      ref={sectionRef}
+      id="donate"
+      className="min-h-screen flex flex-col justify-start pt-14 pb-12 bg-white"
+    >
+      <div className="w-full max-w-xl mx-auto px-6">
+        <div className="text-center mb-6">
+          <h2 className="text-4xl sm:text-5xl font-semibold text-ink text-balance">
             Make your gift.
           </h2>
-          <p className="mt-5 text-xl text-ink-2 text-balance">
+          <p className="mt-3 text-lg text-ink-2 text-balance">
             Choose an amount and give securely in seconds.
           </p>
         </div>
 
         <form
           onSubmit={handleDonate}
-          className="bg-white rounded-[28px] border border-black/5 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.3)] p-7 sm:p-10"
+          className="bg-white rounded-[24px] border border-black/5 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.3)] p-6 sm:p-8"
         >
           {/* Amount segmented selector */}
-          <label className="block text-sm font-medium text-ink mb-3">
+          <label className="block text-sm font-medium text-ink mb-2.5">
             Amount
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-3">
@@ -120,7 +128,7 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
                     setSelectedAmount(item.value);
                     setCustomAmount("");
                   }}
-                  className={`py-3 rounded-2xl text-[15px] font-medium transition-all ${
+                  className={`py-2.5 rounded-2xl text-[15px] font-medium transition-all ${
                     active
                       ? "bg-lake text-white shadow-md scale-[1.02]"
                       : "bg-mist text-ink hover:bg-black/[0.06]"
@@ -132,7 +140,7 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
             })}
           </div>
 
-          <div className="relative mb-8">
+          <div className="relative mb-4">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-2 text-sm font-medium">
               ETB
             </span>
@@ -151,7 +159,7 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
           </div>
 
           {/* Donor info */}
-          <div className="space-y-3 mb-6">
+          <div className="space-y-2.5 mb-4">
             {!isAnonymous && (
               <>
                 <input
@@ -177,13 +185,13 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
             <textarea
               placeholder="Leave a message (optional)"
               {...register("message")}
-              rows={3}
+              rows={2}
               className={`${inputClass} resize-none`}
             />
           </div>
 
           {/* Anonymous toggle */}
-          <label className="flex items-center justify-between py-3 px-4 rounded-2xl bg-mist mb-6 cursor-pointer">
+          <label className="flex items-center justify-between py-2.5 px-4 rounded-2xl bg-mist mb-4 cursor-pointer">
             <span className="text-[15px] text-ink">Donate anonymously</span>
             <span className="relative inline-flex items-center">
               <input
@@ -205,7 +213,7 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
           <button
             type="submit"
             disabled={isLoading || !finalAmount}
-            className="w-full py-4 rounded-full bg-lake text-white text-[17px] font-medium hover:bg-lake-deep disabled:bg-black/15 disabled:cursor-not-allowed transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2"
+            className="w-full py-3.5 rounded-full bg-lake text-white text-[17px] font-medium hover:bg-lake-deep disabled:bg-black/15 disabled:cursor-not-allowed transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 mt-1"
           >
             {isLoading ? (
               <>
