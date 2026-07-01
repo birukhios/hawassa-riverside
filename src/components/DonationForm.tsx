@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { type DonationFormData } from "@/lib/validations";
-import { Loader2, Lock, ArrowLeft } from "lucide-react";
+import { Loader2, Lock, X } from "lucide-react";
 import { DONATION_AMOUNTS } from "@/lib/constants";
 import AfroPayCheckout from "./AfroPayCheckout";
 
@@ -24,7 +24,6 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [checkout, setCheckout] = useState<CheckoutState | null>(null);
-  const sectionRef = useRef<HTMLElement>(null);
 
   const { register, getValues, watch } = useForm<DonationFormData>({
     defaultValues: { currency: "ETB", isAnonymous: false },
@@ -34,6 +33,14 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
   const finalAmount = customAmount
     ? parseFloat(customAmount)
     : selectedAmount || 0;
+
+  // lock body scroll while the checkout overlay is open
+  useEffect(() => {
+    document.body.style.overflow = checkout ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [checkout]);
 
   const handleDonate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,44 +65,15 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
       currency: data.currency || "ETB",
     });
     setIsLoading(false);
-    requestAnimationFrame(() =>
-      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-    );
   };
 
   const inputClass =
     "w-full px-4 py-3 rounded-2xl bg-mist border border-transparent focus:bg-white focus:border-lake/40 focus:outline-none focus:ring-4 focus:ring-lake/10 text-ink placeholder:text-ink-2/60 transition-all";
 
-  // --- Checkout view (inline, in the donate section) ---
-  if (checkout) {
-    return (
-      <section
-        ref={sectionRef}
-        id="donate"
-        className="min-h-screen flex flex-col justify-start pt-14 pb-12 bg-mist"
-      >
-        <div className="w-full max-w-[620px] mx-auto px-4">
-          <button
-            onClick={() => setCheckout(null)}
-            className="inline-flex items-center gap-1.5 text-ink-2 hover:text-ink text-sm font-medium mb-5 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to donation
-          </button>
-          <AfroPayCheckout
-            amount={checkout.amount}
-            currency={checkout.currency}
-            reference={checkout.reference}
-          />
-        </div>
-      </section>
-    );
-  }
-
-  // --- Donation form view ---
+  // --- Donation form view (with checkout overlay) ---
   return (
+    <>
     <section
-      ref={sectionRef}
       id="donate"
       className="min-h-screen flex flex-col justify-start pt-14 pb-12 bg-white"
     >
@@ -232,5 +210,28 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
         </form>
       </div>
     </section>
+
+      {/* Checkout overlay — full-screen, reliable on mobile */}
+      {checkout && (
+        <div className="fixed inset-0 z-[90] overflow-y-auto bg-black/50 backdrop-blur-sm">
+          <div className="min-h-full flex items-start sm:items-center justify-center p-4 py-8">
+            <div className="w-full max-w-[620px]">
+              <button
+                onClick={() => setCheckout(null)}
+                className="inline-flex items-center gap-1.5 text-white/90 hover:text-white text-sm font-medium mb-4 transition-colors"
+              >
+                <X className="w-4 h-4" />
+                Back to donation
+              </button>
+              <AfroPayCheckout
+                amount={checkout.amount}
+                currency={checkout.currency}
+                reference={checkout.reference}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
