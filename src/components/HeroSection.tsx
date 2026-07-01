@@ -64,7 +64,7 @@ export default function HeroSection() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <video
               className="absolute inset-0 w-full h-full object-cover"
-              style={{ transform: "scale(2.9) translateY(-6%)" }}
+              style={{ transform: "scale(2.9)" }}
               autoPlay
               muted
               loop
