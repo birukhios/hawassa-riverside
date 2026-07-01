@@ -43,3 +43,11 @@ next-env.d.ts
 # large media served locally only (exceeds GitHub file limit)
 /public/hawassa-hero.mp4
 *.mov
+
+# local sqlite db
+*.db
+*.db-journal
+prisma/dev.db
+
+# keep the example env (no secrets)
+!.env.example

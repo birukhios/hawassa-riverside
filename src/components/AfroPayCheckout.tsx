@@ -1,18 +1,27 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Lock, Loader2, ChevronDown, Check } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Lock, Loader2, ChevronDown, Check, Smartphone, XCircle } from "lucide-react";
 import { WALLETS, BANKS, CURRENCIES } from "@/lib/payment-options";
 import { VisaLogo, MastercardLogo, AmexLogo } from "./BrandLogos";
 import WalletLogo from "./WalletLogo";
 import LogoImg from "./LogoImg";
+import { startWalletPayment, checkPaymentStatus } from "@/lib/afropay-client";
+import { normalizeEthiopianPhone, isSafaricom } from "@/lib/phone";
 
 type Tab = "wallet" | "bank" | "domestic" | "international";
+
+export interface DonorInfo {
+  donorName?: string;
+  donorPhone?: string;
+  message?: string;
+  isAnonymous?: boolean;
+}
 
 interface Props {
   amount: number;
   currency: string;
-  reference: string;
+  donor?: DonorInfo;
 }
 
 const TABS: { id: Tab; label: string }[] = [
@@ -25,8 +34,9 @@ const TABS: { id: Tab; label: string }[] = [
 export default function AfroPayCheckout({
   amount,
   currency,
-  reference,
+  donor,
 }: Props) {
+  const [reference, setReference] = useState("");
   const [tab, setTab] = useState<Tab>("wallet");
   const [wallet, setWallet] = useState(WALLETS[0].id);
   const [phone, setPhone] = useState("");
@@ -56,11 +66,16 @@ export default function AfroPayCheckout({
 
   // Per-tab validation + the method label we record
   const { valid, method } = useMemo(() => {
-    if (tab === "wallet")
+    if (tab === "wallet") {
+      const phoneOk =
+        wallet === "mpesa"
+          ? isSafaricom(phone)
+          : phone.replace(/\D/g, "").length >= 9;
       return {
-        valid: phone.replace(/\D/g, "").length >= 9,
+        valid: phoneOk,
         method: WALLETS.find((w) => w.id === wallet)?.name || "Wallet",
       };
+    }
     if (tab === "bank")
       return { valid: account.trim().length >= 6, method: bank };
     const cardOk =
@@ -74,13 +89,66 @@ export default function AfroPayCheckout({
   }, [tab, phone, wallet, account, bank, card, payCurrency]);
 
   const [error, setError] = useState<string | null>(null);
-  const [paid, setPaid] = useState(false);
+  // checkout flow phase
+  const [phase, setPhase] = useState<"form" | "awaiting" | "success" | "failed">(
+    "form"
+  );
+  const [failMsg, setFailMsg] = useState("");
+  const pollRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const stoppedRef = useRef(false);
 
-  const handlePay = () => {
+  // stop polling on unmount
+  useEffect(() => {
+    return () => {
+      stoppedRef.current = true;
+      if (pollRef.current) clearTimeout(pollRef.current);
+    };
+  }, []);
+
+  const stopPolling = () => {
+    stoppedRef.current = true;
+    if (pollRef.current) clearTimeout(pollRef.current);
+  };
+
+  const pollStatus = (txRef: string) => {
+    const startedAt = Date.now();
+    const TIMEOUT_MS = 180000; // 3 minutes
+    const tick = async () => {
+      if (stoppedRef.current) return;
+      try {
+        const { outcome, message } = await checkPaymentStatus(txRef);
+        if (stoppedRef.current) return;
+        if (outcome === "success") {
+          setPhase("success");
+          return;
+        }
+        if (outcome === "failed") {
+          setFailMsg(message || "The payment was not completed.");
+          setPhase("failed");
+          return;
+        }
+      } catch {
+        // network hiccup — keep trying until timeout
+      }
+      if (Date.now() - startedAt > TIMEOUT_MS) {
+        setFailMsg("We didn't receive a confirmation in time. Please try again.");
+        setPhase("failed");
+        return;
+      }
+      pollRef.current = setTimeout(tick, 4000);
+    };
+    tick();
+  };
+
+  const isWallet = tab === "wallet";
+
+  const handlePay = async () => {
     if (!valid) {
       setError(
         tab === "wallet"
-          ? "Enter the phone number linked to your wallet."
+          ? wallet === "mpesa"
+            ? "Enter a valid Safaricom (M-PESA) number — starts with 07."
+            : "Enter the phone number linked to your wallet."
           : tab === "bank"
           ? "Enter your bank account number."
           : "Enter complete card details."
@@ -88,16 +156,110 @@ export default function AfroPayCheckout({
       return;
     }
     setError(null);
+
+    if (isWallet) {
+      // Real USSD payment via our internal API route -> AfroPay
+      setLoading(true);
+      try {
+        const { reference: txRef } = await startWalletPayment({
+          method: wallet,
+          amount: total,
+          currency: "ETB",
+          phone,
+          ...donor,
+        });
+        setReference(txRef);
+        stoppedRef.current = false;
+        setPhase("awaiting");
+        pollStatus(txRef);
+      } catch (e) {
+        setError(
+          e instanceof Error
+            ? e.message
+            : "Could not start the payment. Please try again."
+        );
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    // Other methods aren't wired to a live endpoint yet — simulate success.
     setLoading(true);
-    // In production AfroPay's hosted checkout processes the payment and a
-    // server webhook confirms it. Here we simulate the gateway response.
+    setReference(
+      `SIM-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
+    );
     setTimeout(() => {
       setLoading(false);
-      setPaid(true);
+      setPhase("success");
     }, 1300);
   };
 
-  if (paid) {
+  // --- Awaiting confirmation (wallet USSD push) ---
+  if (phase === "awaiting") {
+    return (
+      <div className="w-full max-w-[620px] mx-auto bg-white rounded-2xl shadow-[0_20px_70px_-25px_rgba(0,0,0,0.25)] border border-gray-100 overflow-hidden text-center px-7 py-12">
+        <div className="mx-auto w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-6 relative">
+          <Smartphone className="w-8 h-8 text-blue-600" />
+          <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white flex items-center justify-center">
+            <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
+          </span>
+        </div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          Confirm on your phone
+        </h2>
+        <p className="text-gray-500 mb-6 max-w-sm mx-auto">
+          We sent a {method} request to{" "}
+          <span className="font-semibold text-gray-700">
+            {normalizeEthiopianPhone(phone)}
+          </span>
+          . Open the prompt and enter your PIN to approve{" "}
+          <span className="font-semibold text-gray-700">ETB {fmt(total)}</span>.
+        </p>
+        <div className="inline-flex items-center gap-2 text-sm text-gray-400 mb-8">
+          <Loader2 className="w-4 h-4 animate-spin" />
+          Waiting for confirmation…
+        </div>
+        <div>
+          <button
+            onClick={() => {
+              stopPolling();
+              setPhase("form");
+            }}
+            className="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- Failed ---
+  if (phase === "failed") {
+    return (
+      <div className="w-full max-w-[620px] mx-auto bg-white rounded-2xl shadow-[0_20px_70px_-25px_rgba(0,0,0,0.25)] border border-gray-100 overflow-hidden text-center px-7 py-12">
+        <div className="mx-auto w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mb-6">
+          <XCircle className="w-9 h-9 text-red-500" />
+        </div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          Payment not completed
+        </h2>
+        <p className="text-gray-500 mb-8 max-w-sm mx-auto">{failMsg}</p>
+        <button
+          onClick={() => {
+            setFailMsg("");
+            setPhase("form");
+          }}
+          className="px-7 py-3 rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
+        >
+          Try again
+        </button>
+      </div>
+    );
+  }
+
+  if (phase === "success") {
     return (
       <div className="w-full max-w-[620px] mx-auto bg-white rounded-2xl shadow-[0_20px_70px_-25px_rgba(0,0,0,0.25)] border border-gray-100 overflow-hidden text-center px-7 py-12">
         <div className="mx-auto w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mb-6">
@@ -124,7 +286,7 @@ export default function AfroPayCheckout({
           </div>
         </dl>
         <p className="text-[13px] text-gray-400">
-          A receipt has been sent to your email. Powered by AfroPay.
+          Keep your reference number for your records. Powered by AfroPay.
         </p>
       </div>
     );
@@ -240,10 +402,15 @@ export default function AfroPayCheckout({
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 inputMode="numeric"
-                placeholder="941229774"
+                placeholder={wallet === "mpesa" ? "0712345678" : "0912345678"}
                 className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-400"
               />
             </div>
+            {wallet === "mpesa" && (
+              <p className="text-xs text-gray-400 -mt-2">
+                Use your Safaricom M-PESA number (starts with 07).
+              </p>
+            )}
           </div>
         )}
 

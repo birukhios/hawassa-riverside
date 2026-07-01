@@ -19,7 +19,7 @@ export default function Home() {
       <WhatWeBuild />
       <StorySection />
       <ImpactBreakdown />
-      <DonationForm campaignId="hawassa-riverside" />
+      <DonationForm />
       <PaymentPartners />
       <RecentDonors />
       <FAQSection />

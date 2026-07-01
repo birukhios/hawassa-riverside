@@ -3,25 +3,24 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { type DonationFormData } from "@/lib/validations";
-import { Loader2, Lock, X } from "lucide-react";
+import { Lock, X } from "lucide-react";
 import { DONATION_AMOUNTS } from "@/lib/constants";
 import AfroPayCheckout from "./AfroPayCheckout";
 
-interface DonationFormProps {
-  campaignId: string;
-  onSuccess?: () => void;
-}
-
 interface CheckoutState {
-  reference: string;
   amount: number;
   currency: string;
+  donor: {
+    donorName?: string;
+    donorPhone?: string;
+    message?: string;
+    isAnonymous?: boolean;
+  };
 }
 
-export default function DonationForm({ campaignId }: DonationFormProps) {
+export default function DonationForm() {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(1000);
   const [customAmount, setCustomAmount] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [checkout, setCheckout] = useState<CheckoutState | null>(null);
 
@@ -49,22 +48,20 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
       return;
     }
     setError(null);
-    setIsLoading(true);
 
-    // Create the AfroPay reference and open the checkout inline. (In a hosted
-    // setup the reference would come from the AfroPay init API server-side.)
+    // Open the checkout overlay; the AfroPay reference is created server-side
+    // when the user chooses a method and pays.
     const data = getValues();
-    const reference = `APR-${Date.now()}-${Math.random()
-      .toString(36)
-      .slice(2, 9)
-      .toUpperCase()}`;
-
     setCheckout({
-      reference,
       amount: finalAmount,
       currency: data.currency || "ETB",
+      donor: {
+        donorName: data.donorName,
+        donorPhone: data.donorPhone,
+        message: data.message,
+        isAnonymous: data.isAnonymous,
+      },
     });
-    setIsLoading(false);
   };
 
   const inputClass =
@@ -184,17 +181,10 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
 
           <button
             type="submit"
-            disabled={isLoading || !finalAmount}
+            disabled={!finalAmount}
             className="w-full py-3.5 rounded-full bg-lake text-white text-[17px] font-medium hover:bg-lake-deep disabled:bg-black/15 disabled:cursor-not-allowed transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 mt-1"
           >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Processing…
-              </>
-            ) : (
-              <>Continue to checkout · ETB {finalAmount.toLocaleString()}</>
-            )}
+            Continue to checkout · ETB {finalAmount.toLocaleString()}
           </button>
 
           <p className="flex items-center justify-center gap-1.5 text-center text-ink-2 text-[13px] mt-4">
@@ -220,7 +210,7 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
               <AfroPayCheckout
                 amount={checkout.amount}
                 currency={checkout.currency}
-                reference={checkout.reference}
+                donor={checkout.donor}
               />
             </div>
           </div>
