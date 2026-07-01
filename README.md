@@ -1,171 +1,116 @@
-# Hawassa Community Fund
+# Hawassa Lakeside — Fundraising Site
 
-A beautiful, modern fundraising website for Hawassa City, built with Next.js 14, React 19, and TypeScript. Integrated with **AfroPay Checkout** for secure donation processing.
+A donation site for the **Hawassa Lakeside** lakefront-park project (a Sidama
+Bank initiative, powered by AfroPay). Built with **Next.js (App Router)**,
+Tailwind, and **Prisma**, with real wallet payments through **AfroPay**
+(Telebirr, CBE Birr, M-PESA, Awash) via internal server API routes.
 
-## 🎯 Features
+> ⚠️ This is a **Next.js server app** (it runs API routes + a database). It
+> **cannot** be hosted on GitHub Pages (static only). Deploy to a Node/serverless
+> host such as **Vercel**, Render, Railway, or your own Node server.
 
-✨ **Beautiful Design**
-- Mobile-first responsive layout
-- Smooth animations and transitions
-- Modern gradient backgrounds
-- Clean, professional typography
+---
 
-💰 **Donation System**
-- One-page fundraising campaign
-- Multiple donation amounts
-- Custom donation support
-- Anonymous donation option
-- Real-time donation tracking
+## 1. Prerequisites
 
-🔒 **Payment Processing**
-- Secure AfroPay Checkout integration
-- Server-side payment verification
-- Donation status tracking
-- Webhook support for payment updates
-- Success/Failure payment pages
+- **Node.js 18+** (tested on Node 24)
+- npm
 
-📊 **Campaign Dashboard**
-- Progress visualization
-- Donor statistics
-- Impact breakdown
-- Recent donor list
-- Admin dashboard for management
+## 2. Install
 
-🌍 **Trust & Transparency**
-- Security badges
-- Transparent donation tracking
-- Public progress updates
-- FAQ section
-- Contact information
+React 19 needs the legacy peer-deps flag:
 
-## 📋 Project Structure
-
-```
-src/
-├── app/
-│   ├── api/
-│   │   ├── donations/           # POST/GET donation endpoints
-│   │   └── afropay/
-│   │       ├── webhook/         # Payment webhook handler
-│   │       └── verify/          # Payment verification
-│   ├── admin/                   # Admin dashboard
-│   ├── success/                 # Success page
-│   ├── failure/                 # Failure page
-│   ├── layout.tsx               # Root layout
-│   ├── page.tsx                 # Home page
-│   └── globals.css              # Global styles
-├── components/
-│   ├── HeroSection.tsx
-│   ├── CampaignProgress.tsx
-│   ├── ImpactSection.tsx
-│   ├── StorySection.tsx
-│   ├── ImpactBreakdown.tsx
-│   ├── DonationForm.tsx
-│   ├── RecentDonors.tsx
-│   ├── FAQSection.tsx
-│   └── Footer.tsx
-├── lib/
-│   ├── afropay.ts              # AfroPay utilities
-│   ├── constants.ts            # Configuration
-│   └── validations.ts          # Zod schemas
-├── prisma/
-│   └── schema.prisma           # Database schema
-├── public/                      # Static assets
-└── .env.local                   # Environment variables
-```
-
-## 🚀 Quick Start
-
-### 1. Install Dependencies
 ```bash
 npm install --legacy-peer-deps
 ```
 
-### 2. Configure Environment
+## 3. Configure environment
+
+Copy the example and fill in your values:
+
 ```bash
-cp .env.local.example .env.local
+cp .env.example .env.local
 ```
 
-Edit `.env.local` and add your AfroPay credentials.
+`.env.local` (gitignored — never commit real keys):
 
-### 3. Start Development Server
+| Variable | What it is |
+|----------|------------|
+| `DATABASE_URL` | Prisma DB URL. Default `file:./dev.db` (local SQLite). |
+| `AFROPAY_BASE_URL` | `https://paybridge.afropays.co/api/v1` |
+| `AFROPAY_API_KEY` | Your AfroPay API key (**server-side only**, never exposed to the browser). |
+| `NEXT_PUBLIC_SITE_URL` | Public URL, used for AfroPay redirect/callback URLs (e.g. `http://localhost:3000` in dev). |
+
+## 4. Set up the database (Prisma)
+
 ```bash
-npm run dev
+npm run prisma generate      # generate the client
+npm run prisma db push       # create the SQLite tables (dev.db)
 ```
 
-Visit `http://localhost:3000` in your browser.
+(`npm run build` also runs `prisma generate` automatically.)
 
-## 🎨 Website Sections
+## 5. Run it
 
-1. **Hero Section** - Campaign introduction with CTA
-2. **Campaign Progress** - Animated fundraising progress
-3. **Impact Areas** - Six impact categories
-4. **Storytelling** - Emotional narrative about Hawassa
-5. **Impact Breakdown** - Donation amount impact examples
-6. **Donation Form** - Main donation interface
-7. **Recent Donors** - Live donor feed
-8. **FAQ** - Frequently asked questions
-9. **Footer** - Links and contact info
-10. **Admin Dashboard** - Donation management (/admin)
-
-## 💳 Payment Processing
-
-**Flow:**
-1. User fills donation form
-2. Frontend calls `/api/donations`
-3. Backend creates donation record & gets AfroPay reference
-4. User redirected to AfroPay Checkout
-5. After payment, redirected to success/failure page
-6. AfroPay webhook verifies payment
-7. Backend updates donation status
-
-## 🔐 Security
-
-- ✅ Server-side form validation
-- ✅ Payment verification on backend
-- ✅ Webhook signature validation
-- ✅ Environment variable protection
-- ✅ SQL injection protection (Prisma)
-- ✅ XSS protection
-
-## 📁 Database Models
-
-**Campaign** - Fundraising campaign metadata
-**Donation** - Individual donor contributions
-**PaymentTransaction** - Payment records from AfroPay
-
-See [SETUP.md](./SETUP.md) for detailed configuration and deployment instructions.
-
-## 💡 Customization
-
-- Update campaign details in `src/lib/constants.ts`
-- Modify component text in `src/components/`
-- Change colors in Tailwind classes
-- Configure AfroPay keys in `.env.local`
-
-## 🚀 Deployment
-
-**Vercel (Recommended):**
-- Push to GitHub
-- Import in Vercel
-- Set environment variables
-- Deploy
-
-**Docker:**
 ```bash
-docker build -t hawassa-fund .
-docker run -p 3000:3000 hawassa-fund
+npm run dev          # http://localhost:3000
 ```
 
-## 📞 Support
+Production build:
 
-- Email: support@hawassafund.org
-- See [SETUP.md](./SETUP.md) for detailed documentation
-
-## 📜 License
-
-MIT License - Built with ❤️ for Hawassa City
+```bash
+npm run build && npm start
+```
 
 ---
 
-**Next Steps:** See [SETUP.md](./SETUP.md) for complete setup and deployment guide.
+## Testing a donation / payment
+
+1. Open the site → **Donate** → pick an amount → **Continue to checkout**.
+2. **Wallet** tab → choose a wallet:
+   - **Telebirr / CBE Birr / Awash** — any Ethiopian number (e.g. `09xxxxxxxx`).
+   - **M-PESA** — must be a **Safaricom** number starting with **07** (validated).
+3. Tap **Pay** → a **"Confirm on your phone"** modal appears and polls the
+   transaction status. Approve the USSD prompt on the phone with its PIN.
+4. On success (AfroPay status `2`) you get a confirmation and the campaign total
+   is incremented; anything else shows a failure screen.
+
+**Notes**
+- Use **real wallet accounts** — dummy numbers make the gateway return errors.
+- The AfroPay sandbox can be rate-limited; retry if a call transiently fails.
+- Bank / domestic card / international card tabs are UI-only for now (no live
+  endpoint wired yet).
+
+## Payment flow (how it works)
+
+```
+Browser → POST /api/afropay/initiate   (server calls AfroPay, key stays secret)
+        ← { reference }
+Browser → GET  /api/afropay/status?reference=…   (polled every 4s)
+        ← { outcome: success | pending | failed }
+```
+
+Everything is persisted with Prisma: `Donation` + `PaymentTransaction`
+(+ `Campaign`). Status code **2 = success**; `0/1` keep polling; anything else
+is treated as failed.
+
+## Key files
+
+| Path | Purpose |
+|------|---------|
+| `src/lib/afropay-config.ts` | Base URL + API key (from env) |
+| `src/lib/afropay-api.ts` | Server-side AfroPay calls + per-wallet endpoints |
+| `src/lib/afropay-client.ts` | Browser helpers that call our internal routes |
+| `src/app/api/afropay/initiate/route.ts` | Create donation + start payment |
+| `src/app/api/afropay/status/route.ts` | Poll status + persist result |
+| `src/lib/prisma.ts` | Prisma client + default campaign |
+| `src/components/AfroPayCheckout.tsx` | Checkout UI + waiting modal + polling |
+| `prisma/schema.prisma` | Data models |
+
+## Deploying
+
+- **Vercel** (recommended): import the repo, set the env vars from
+  `.env.example`. For serverless, switch the Prisma datasource to Postgres and
+  set `DATABASE_URL` accordingly (SQLite doesn't persist on serverless).
+- **Node server / VPS**: `npm run build && npm start`; SQLite works with a
+  persistent disk.
