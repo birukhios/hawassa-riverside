@@ -147,12 +147,6 @@ export default function DonationForm({ campaignId }: DonationFormProps) {
                   className={inputClass}
                 />
                 <input
-                  type="email"
-                  placeholder="Email (for your receipt)"
-                  {...register("donorEmail")}
-                  className={inputClass}
-                />
-                <input
                   type="tel"
                   placeholder="Phone (optional)"
                   {...register("donorPhone")}
